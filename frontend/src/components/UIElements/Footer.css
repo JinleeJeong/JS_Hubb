@@ -1,0 +1,24 @@
+  .footer{
+    clear: both;
+    width:100%;
+    height:auto;
+    background-color:#90CAF9;
+    bottom:0px;
+  }
+  footer{
+    margin-left:470px;
+    margin-right:470px;
+    height:auto;
+    width: auto;  
+    min-height:50px;
+    max-width: 960px;
+    padding: 100px 100px ;
+  }
+  .footer_introduce{
+    color:white;
+    padding-bottom:10px;
+    border-bottom: 1px solid white;
+  }
+  @media screen and (min-width:320px) and (max-width:667px){
+
+    }
