@@ -29,11 +29,16 @@ export default class AppContextProvider extends Component {
 
   actions = {
     addContents: formData => apiClient.post('/contents', formData),
-    getContentsR1: () => apiClient.get('/contents/r1'),
-    getContentsR2: () => apiClient.get('/contents/r2'),
-    getContentsR3: () => apiClient.get('/contents/r3'),
-    getContentsR4: () => apiClient.get('/contents/r4'),
-    getContentsR5: () => apiClient.get('/contents/r5'),
+    //
+    addParticipants: formData => apiClient.post('/participants', formData),
+    //
+    getUserInfomations : () => apiClient.get('/users'),
+    //
+    getContentsRepresentation1: () => apiClient.get('/contents/representation1'),
+    getContentsRepresentation2: () => apiClient.get('/contents/representation2'),
+    getContentsNew: () => apiClient.get('/contents/new'),
+    getContentsAttention1: () => apiClient.get('/contents/attention1'),
+    getContentsAttention2: () => apiClient.get('/contents/attention2'),
     getContentsByCategory: searchTerm => apiClient.get(`/contents/context/${searchTerm}`), //메인 검색창에서 카테고리 검색 시 데이터 보여줌
     getContentsDetail: detailTerm => apiClient.get(`/contents/detail/${detailTerm}`), //상세내용 보여줌
     getCurrentPosition: () => {

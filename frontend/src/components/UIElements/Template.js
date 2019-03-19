@@ -8,21 +8,16 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import { withStyles, createMuiTheme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Icon from '@material-ui/core/Icon';
+import { withStyles } from '@material-ui/core/styles';
+// import Icon from '@material-ui/core/Icon';
 import { AppContext } from '../../contexts/appContext';
 import { Link } from 'react-router-dom';
-import SearchInput, { /*createFilter*/ } from 'react-search-input';
-// import CardMedia from '@material-ui/core/CardMedia';
-// import CssBaseline from '@material-ui/core/CssBaseline';
-// import Toolbar from '@material-ui/core/Toolbar';
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-// import CameraIcon from '@material-ui/icons/PhotoCamera';
-// import AppBar from '@material-ui/core/AppBar';
-// const KEYS_TO_FILTERS = ['title']
-
-
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import MenuItem from '@material-ui/core/MenuItem';
+import ReactDOM from 'react-dom';
 const styles = theme => (
     
   {
@@ -84,62 +79,55 @@ class Template extends Component {
       
       this.state = {
         users: [],
-        contentsCate1: [],
-        contentsCate2: [],
-        contentsCate3: [],
-        contentsCate4: [],
-        contentsCate5: [],
+        contentsRepresentation1: [],
+        contentsRepresentation2: [],
+        contentsNew: [],
+        contentsAttention1: [],
+        contentsAttention2: [],
         searchTerm: '',
-        value: 0
+        values: 0,
+        labelWidth: 0,
       }
       
-      this.searchUpdated = this.searchUpdated.bind(this);
       this.buttonClicked = this.buttonClicked.bind(this);
     }
   
     buttonClicked(e) {
-      this.setState({value: this.state.value+1});
+      this.setState({values: this.state.values+1});
     }
     shouldComponentUpdate(nextProps, nextState) {
-      return this.state.value === nextState.value || this.state.searchTerm === nextState.searchTerm;
+      return this.state.values === nextState.values || this.state.searchTerm === nextState.searchTerm;
     }
     
     async componentDidMount() {  
       this.context.actions.checkAuth();
-  
+      
       this.context.actions.getCurrentPosition();
     
       this.setState({
-        contentsCate1: await this.context.actions.getContentsR1(), // 대표 1
-        contentsCate2: await this.context.actions.getContentsR2(), // 대표 2
+        labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+        contentsRepresentation1: await this.context.actions.getContentsRepresentation1(), // 대표 1
+        contentsRepresentation2: await this.context.actions.getContentsRepresentation2(), // 대표 2
         
         // Login
-        contentsCate3: await this.context.actions.getContentsR3(), // 최신순
-        contentsCate4: await this.context.actions.getContentsR4(), // 관심 1
-        contentsCate5: await this.context.actions.getContentsR5(), // 관심 2
+        contentsNew: await this.context.actions.getContentsNew(), // 최신순
+        contentsAttention1: await this.context.actions.getContentsAttention1(), // 관심 1
+        contentsAttention2: await this.context.actions.getContentsAttention2(), // 관심 2
       });
 
     };
-  
-    searchUpdated (term) {
-      // if(term === ''){
-      //   this.setState({searchTerm : 'ForExample'})
-      // }
-      // else {
-      //   this.setState({searchTerm : term})
-      // }
-      this.setState({
-        searchTerm: term
+    
+    handleChange = event => {
+      this.setState({ [event.target.name]: event.target.value,
+        searchTerm : event.target.value, 
+      }, () => {
+        console.log(this.state.searchTerm);
       });
     };
-    
-    
     render() {
       const { lat, lng } = this.context.state;
-      const { classes } = this.props;      
-      console.log('3 '+this.state.contentsCate3)
-      console.log('4 '+this.state.contentsCate4)
-      console.log('5 '+this.state.contentsCate5)
+      console.log(this.state.contentsNew);
+      const { classes } = this.props;
       return (
         <Fragment>
           <div className={classes.heroUnit} style={{textAlign:"center"}}>
@@ -159,19 +147,44 @@ class Template extends Component {
 
 
           <div className={classNames(classes.layout, classes.cardGrid)}>
-              <TextField
-                onChange={this.searchUpdated}
-                style={{marginBottom:"3vh", width:"20vh"}}
-                id="outlined-search"
-                placeholder="Search Category"
-                type="search"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
+          <FormControl style = {{width : "25vh"}}variant="outlined" className={classes.formControl}>
+              <InputLabel
+                ref={ref => {
+                  this.InputLabelRef = ref;
+                }}
+                htmlFor="outlined-age-simple"
+              >
+                Category
+              </InputLabel>
+              <Select
+                value={this.state.searchTerm}
+                onChange={this.handleChange}
+                input={
+                  <OutlinedInput
+                    labelWidth={this.state.labelWidth}
+                    name="category"
+                    id="outlined-age-simple"
+                  />
+                }
+              >
+                
+                <MenuItem value={'영어'}>영어</MenuItem>
+                <MenuItem value={'일본어'}>일본어</MenuItem>
+                <MenuItem value={'중국어'}>중국어</MenuItem>
+                <MenuItem value={'회화'}>회화</MenuItem>
+                <MenuItem value={'취업준비'}>취업준비</MenuItem>
+                <MenuItem value={'면접'}>면접</MenuItem>
+                <MenuItem value={'자기소개서'}>자기소개서</MenuItem>
+                <MenuItem value={'프로젝트'}>프로젝트</MenuItem>
+                <MenuItem value={'코딩 테스트'}>코딩 테스트</MenuItem>
+                <MenuItem value={'전공'}>전공</MenuItem>
+                <MenuItem value={'인적성/NCS'}>인적성/NCS</MenuItem>
+              </Select>
+        </FormControl>
+              
               <Link to={`/category/`+this.state.searchTerm+`/`}>
                  <span 
-                    style={{position:"relative", right:"2vh", top:"2.7vh", color : "black"}}
+                    style={{position:"relative", right:"-1.5vh", top:"2vh", color : "black"}}
                     className="glyphicon glyphicon-search" aria-hidden="true" ></span>
               </Link>
 
@@ -182,7 +195,7 @@ class Template extends Component {
                   <div>
                   <div style={{textAlign: "right", marginBottom : "3vh"}}>대표 카테고리 Ⅰ</div>
                   <Grid container spacing={40}>
-                    {this.state.contentsCate1.map((board, index) => (
+                    {this.state.contentsRepresentation1.map((board, index) => (
                       <Grid item key={index} sm={6} md={3} lg={3}>
                         <Card className={classes.card}>
                         <div key={index}></div>
@@ -196,7 +209,7 @@ class Template extends Component {
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                             </Typography>
                             <Typography>
-                            {board.category}
+                            {board.categories}
                             </Typography> 
                           </CardContent>
                           <CardActions>
@@ -210,7 +223,7 @@ class Template extends Component {
                     
                     <div style={{textAlign: "right", margin : "3vh 0 3vh 0 "}}>대표 카테고리 Ⅱ</div>
                     <Grid container spacing={40}>
-                    {this.state.contentsCate2.map((board, index) => (
+                    {this.state.contentsRepresentation2.map((board, index) => (
                       <Grid item key={index} sm={6} md={3} lg={3}>
                         <Card className={classes.card}>
                         <div key={index}></div>
@@ -224,7 +237,7 @@ class Template extends Component {
                             <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                             </Typography>
                             <Typography>
-                            {board.category}
+                            {board.categories}
                             </Typography> 
                           </CardContent>
                           <CardActions>
@@ -246,7 +259,7 @@ class Template extends Component {
                 <div>
                 <div style={{textAlign: "right", marginBottom : "3vh"}}>모집중!!</div>
                 <Grid container spacing={40}>
-                  {this.state.contentsCate3.map((board, index) => (
+                  {this.state.contentsNew.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
                       <Card className={classes.card}>
                       <div key={index}></div>
@@ -260,7 +273,7 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories}
                           </Typography> 
                         </CardContent>
                         <CardActions>
@@ -274,7 +287,7 @@ class Template extends Component {
                   
                   <div style={{textAlign: "right", margin : "3vh 0 3vh 0 "}}>관심 카테고리 Ⅰ</div>
                   <Grid container spacing={40}>
-                  {this.state.contentsCate4.map((board, index) => (
+                  {this.state.contentsAttention1.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
                       <Card className={classes.card}>
                       <div key={index}></div>
@@ -288,7 +301,7 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories}
                           </Typography> 
                         </CardContent>
                         <CardActions>
@@ -302,7 +315,7 @@ class Template extends Component {
 
                   <div style={{textAlign: "right", margin : "3vh 0 3vh 0 "}}>관심 카테고리 Ⅱ</div>
                   <Grid container spacing={40}>
-                  {this.state.contentsCate5.map((board, index) => (
+                  {this.state.contentsAttention2.map((board, index) => (
                     <Grid item key={index} sm={6} md={3} lg={3}>
                       <Card className={classes.card}>
                       <div key={index}></div>
@@ -316,7 +329,7 @@ class Template extends Component {
                           <div style ={{marginBottom: "3vh"}}>{board.title}</div>
                           </Typography>
                           <Typography>
-                          {board.category}
+                          {board.categories}
                           </Typography> 
                         </CardContent>
                         <CardActions>

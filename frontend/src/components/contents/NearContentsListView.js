@@ -55,7 +55,7 @@ class NearContentsListView extends Component {
   render() {
     return (
       this.state.contents.map((contents, index) => {
-        if(contents.studyLocation.split(' ').splice(0,2).join(' ') === '서울특별시 중구')
+        // if(contents.studyLocation.split(' ').splice(0,2).join(' ') === '서울특별시 중구')
         return <div key={index}>
           <h1>{contents.title}</h1> 
           <p>분류 : {contents.category}</p> 

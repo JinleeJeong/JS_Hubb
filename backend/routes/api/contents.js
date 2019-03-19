@@ -48,28 +48,28 @@ router.post('/', upload, (req, res, next) => {
   });
 });
 
-router.get('/r1', (req, res, next) => { 
+router.get('/representation1', (req, res, next) => { 
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  }).sort({views : -1})
-    .where('category').in(['면접'])
+  }).sort({views : -1})   
+    
     .limit(4);
 });
 
-router.get('/r2', (req, res, next) => {
+router.get('/representation2', (req, res, next) => {
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
   })
   .sort({views : -1})
-  .where('category').in(['영어 회화'])
+  .where('categories').in(['영어'])
   .limit(4);
 });
 
-router.get('/r3', (req, res, next) => {
+router.get('/new', (req, res, next) => {
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
@@ -79,7 +79,7 @@ router.get('/r3', (req, res, next) => {
   .limit(4);
 });
 
-router.get('/r4', (req, res, next) => {
+router.get('/attention1', (req, res, next) => {
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
@@ -89,24 +89,28 @@ router.get('/r4', (req, res, next) => {
   .limit(4);
 });
 
-router.get('/r5', (req, res, next) => {
+router.get('/attention2', (req, res, next) => {
   Contents.find((err, contents) => {
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
   })
-  // .sort({views : -1})
-  // .where('category').in(['면접'])
+  .sort({views : -1})
+
   .limit(4);
 });
 
-router.get('/context/:id', (req, res, next) => { 
-  Contents.findOne((err, contents) => {
+router.get('/context/:category', (req, res, next) => { 
+  var category = req.params.category
+  console.log(category);
+  Contents.find((err, contents) => {
+    
     if (err) return next(err);
     //console.log(res);
     res.json(contents);
-  });
+  }).where('category').in([category])
 });
+
 
 router.get('/detail/:id', (req,res,next) => {
   Contents.findOneAndUpdate({ id: req.params.id },{ $inc: { views: 1 } }, (err, contents) => {

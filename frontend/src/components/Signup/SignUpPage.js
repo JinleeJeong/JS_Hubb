@@ -6,12 +6,7 @@ import SignUpForm from './SignUpForm';
 import { AppContext } from '../../contexts/appContext';
 
 class SignUpPage extends Component {
-
   static contextType = AppContext;
-
-  // constructor (props){
-  //   super(props);
-  // }
 
   componentDidMount() {
     this.context.actions.checkAuth();

@@ -1,40 +1,132 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, FormControl, ButtonGroup, Button } from 'react-bootstrap';
 import { AppContext } from '../../contexts/appContext';
 import queryString from 'query-string';
+import { withStyles, Paper, TextField, Button, Typography, OutlinedInput, Select, MenuItem, FormControl, Checkbox, FormGroup, FormControlLabel, InputLabel, } from '@material-ui/core';
+import { Favorite, FavoriteBorder, } from '@material-ui/icons';
+import studyBackgroundImg from '../../images/study-background.jpg';
 
 /* global naver */
+
+const styles = theme => ({
+  root: {
+    backgroundColor: '#F7F7F7',
+  },
+  topImg: {
+    width: '100%',
+    height: 285,
+    position: 'relative',
+  },
+  topTitleContainer: {
+    position: 'absolute',
+    textAlign: 'center',
+    width: '100%',
+    marginTop: -100,
+  },
+  topTitle: {
+    color: '#E3F2FD',
+    fontWeight: 600,
+    marginBottom: 12,
+  },
+  mainContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  paperContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: '63%',
+    height: '100%',
+    marginTop: 70,
+    marginBottom: 70,
+  },
+  inputContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '70%',
+    marginTop: 50,
+  },
+  inputText: {
+    color: 'black',
+    margin: theme.spacing.unit,
+    fontSize: 23,
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: '95%',
+  },
+  categoryGroup: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+  },
+  naverMap: {
+    width: '100%',
+    height: 550,
+    marginBottom: 10,
+  },
+  addressSelection: {
+    margin: theme.spacing.unit,
+    width: '95%',
+  }, 
+  button: {
+    fontSize: 20,
+    margin: 40,
+    color: 'black',
+  },
+});
 
 class ContentsController extends Component {
   static contextType = AppContext;
 
   state = {
     title: '',
-    category: [],
+    categories: ['영어','일본어','중국어','회화','취업준비','면접','자기소개서','프로젝트','코딩 테스트','전공','인적성/NCS'],
+    selectedCategories: [],
     description: '',
     addresses: [],
     selectedLocation: '',
+  }
+
+  categoryHandler = (e) => {
+    const selectedCategories = this.state.selectedCategories;
+    const inputValue = e.target.value;
+    this.setState(() => {
+      for(const [index, element] of selectedCategories.entries()) {
+        if(element === inputValue) {
+          selectedCategories.splice(index, 1);
+          return {
+            selectedCategories: [...selectedCategories],
+          }
+        }
+      };
+      return {
+        selectedCategories: [...selectedCategories, inputValue],
+      }
+    })
   }
   
   //확인 버튼 클릭시 formData 초기화 후 context addContents에 formData 전달하여 호출
   addContents = async (e) => {
     e.preventDefault();
-    const { title, category, description, selectedLocation: studyLocation } = this.state;
+    const { title, selectedCategories: categories, description, selectedLocation: userLocation } = this.state;
     const coverImg = document.getElementById('coverImg').files[0];
+
     const dataInObject = {
       title,
-      category,
+      categories,
       description,
-      studyLocation,
+      userLocation,
       coverImg,
     };
-    const formData = new FormData();
 
+    const formData = new FormData();
     Object.keys(dataInObject).map((key) => {
       return formData.append(key, dataInObject[key]);
     });
-
+    
     await this.context.actions.addContents(formData);
+    this.props.history.push("/templates");
   }
 
   async componentDidMount() {
@@ -86,68 +178,92 @@ class ContentsController extends Component {
   }
 
   render() {
+    const { classes } = this.props;
+    const { categories, selectedLocation, addresses } = this.state;
     return(
-      <div className = "row">
-        <div className = "col-md-4 col-md-offset-4">
-          <h1 className = "FormHeader">스터디 작성 페이지</h1>
-          <form>
-            <FormGroup>
-              <ControlLabel>제목</ControlLabel>
-              <FormControl
-                type = "text"
-                name="title"
+      <div className={classes.root}>
+        <img className={classes.topImg} src={studyBackgroundImg} alt="" />
+        <div className={classes.topTitleContainer}>
+          <Typography className={classes.topTitle} variant="h4">
+            새로운 스터디 시작하기
+          </Typography>
+          <Typography className={classes.topTitle} variant="h6">
+            원하는 주제의 스터디를 만들어 보세요.
+          </Typography>
+        </div>
+        <div className={classes.mainContainer}>
+          <Paper className={classes.paperContainer} elevation={12}>
+            <div className={classes.inputContainer}>
+              <Typography className={classes.inputText}>
+                스터디 이름
+              </Typography>
+              <TextField
+                className={classes.textField}
                 onChange={(e) => { this.setState({ title: e.target.value})}}
-              >
+                placeholder="스터디의 이름을 입력해 주세요."
+                margin="normal"
+                variant="outlined"
+              />
+            </div>
+            <div className={classes.inputContainer}>
+              <Typography className={classes.inputText}>
+                스터디 목적
+              </Typography>
+              <FormGroup row className={classes.categoryGroup}>
+                {categories.map(category => {
+                  return <FormControlLabel 
+                    control={<Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} color="primary" value={category} key={category} onChange={this.categoryHandler}/>}
+                    label={category}
+                    key={category}
+                  />
+                })}
+              </FormGroup>
+            </div>
+            <div className={classes.inputContainer}>
+              <Typography className={classes.inputText}>
+                스터디 장소
+              </Typography>
+              <div id="naverMap" className={classes.naverMap} />
+              <FormControl variant="outlined" className={classes.addressSelection}>
+                <InputLabel htmlFor="address-select">주소선택</InputLabel>
+                <Select
+                  value={selectedLocation}
+                  onChange={(e) => { this.setState({ selectedLocation: e.target.value }) }}
+                  input={<OutlinedInput name="address" id="address-select" labelWidth={0} />}
+                >
+                  {addresses.map((address, index) => {
+                    return <MenuItem value={address} key={address}>{address}</MenuItem>
+                  })}
+                </Select>
               </FormControl>
-            </FormGroup>
-
-            <FormGroup>
-              <ControlLabel>분류 선택</ControlLabel><br />
-              <ButtonGroup>
-                <Button onClick={(e) => { this.setState({ category: [...this.state.category, e.target.value] })}} name="category" value="영어 회화">영어 회화</Button>
-                <Button onClick={(e) => { this.setState({ category: [...this.state.category, e.target.value] })}} name="category" value="자소서">자소서</Button>
-                <Button onClick={(e) => { this.setState({ category: [...this.state.category, e.target.value] })}} name="category" value="면접">면접</Button>
-                <Button onClick={(e) => { this.setState({ category: [...this.state.category, e.target.value] })}} name="category" value="알고리즘">알고리즘</Button>
-                <Button onClick={(e) => { this.setState({ category: [...this.state.category, e.target.value] })}} name="category" value="프로젝트">프로젝트</Button>
-              </ButtonGroup>
-            </FormGroup>
-
-            <FormGroup controlId="formControlsSelect">
-              <ControlLabel>주소 선택</ControlLabel>
-              <div id="naverMap" style={{ width:'100%', height:'400px'}} />
-              <FormControl 
-                componentClass="select" 
-                onChange={(e) => { this.setState({ selectedLocation: e.target.value }) }}
-              >
-              <option>주소 선택</option>
-              {this.state.addresses.map((address, index) => {
-                return <option value={address} key={index}>{address}</option>
-              })}
-              </FormControl>
-            </FormGroup>
-            
-            <FormGroup controlId="formControlsTextarea">
-              <ControlLabel>스터디 설명</ControlLabel>
-              <FormControl 
-                name="description" 
-                componentClass="textarea"
+            </div>
+            <div className={classes.inputContainer}>
+              <Typography className={classes.inputText}>
+                상세 내용 입력
+              </Typography>
+              <TextField
+                className={classes.textField}
+                multiline
+                rows="12"
+                margin="normal"
+                variant="outlined"
+                placeholder="스터디의 설명/모임 시간 등을 자유롭게 입력 해주세요."
                 onChange={(e) => { this.setState({ description: e.target.value})}} 
-                placeholder="스터디 설명/모임 시간 등을 적어주세요." />
-              </FormGroup>
-
-              <FormGroup>
-                <ControlLabel>커버 이미지</ControlLabel>
-                <input type="file" id="coverImg" multiple/>
-              </FormGroup>
-
-            <Button bsStyle="primary" block type = "submit" onClick={this.addContents}>
-              확인
+              />
+            </div>
+            <div className={classes.inputContainer}>
+              <Typography className={classes.inputText}>
+                스터디 커버 이미지
+              </Typography>
+              <input type="file" id="coverImg" multiple/>
+            </div>
+            <Button className={classes.button} variant="contained" color="primary" onClick={this.addContents}>
+              스터디 작성
             </Button>
-          </form>
+          </Paper>
         </div>
       </div>
     );
   }
 }
-
-export default ContentsController;
+export default withStyles(styles)(ContentsController);

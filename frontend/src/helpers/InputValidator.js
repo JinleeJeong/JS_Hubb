@@ -22,7 +22,7 @@ class InputValidator {
   
   // 1차 비밀번호와 2차 비밀번호가 같은지 여부를 검사한다.
   static sameAsPassword (passwordStr,args){
-    return passwordStr == args[0]['confirmationStr'];
+    return passwordStr === args[0]['confirmationStr'];
   }
   
   // 조건에 맞는 글자만 허용하는지 여부를 검사한다.

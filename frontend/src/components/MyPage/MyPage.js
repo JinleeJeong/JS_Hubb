@@ -1,23 +1,37 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
 import './MyPage.css';
+import { AppContext } from '../../contexts/appContext';
 
 class MyPage extends Component {
+	static contextType = AppContext;
 
-    constructor (props){
-      super(props);
-    }
+	constructor(props) {
+		super(props);
+		this.state = {
+			users : [],
+		}
 
-    render (){
-        return (
-            <div className = "row">
-                <div className = "col-md-4 col-md-offset-4">
-                  
-                </div>
-            </div>
-        );
-    }
+	}
+
+
+	async componentDidMount() {
+		this.context.actions.checkAuth();
+		
+		this.setState({
+		  users : await this.context.actions.getUserInfomations(),
+		});
+	};
+
+	render (){
+		console.log(this.state.users);
+		return (
+			<div>
+				<div>
+					
+				</div>
+			</div>
+		);
+	}
 }
 
 export default MyPage;

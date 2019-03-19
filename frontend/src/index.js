@@ -1,19 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({
+    typography: {
+        useNextVariants : true,
+        fontSize: 18,
+        fontFamily: '"Product Sans", serif',
+    },
     palette: {
         primary: {
             main: '#90CAF9',
         },
-    },
-    typography: {
-        // In Japanese the characters are usually larger.
-        fontSize: 15,
     },
 });
 

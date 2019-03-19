@@ -6,10 +6,6 @@ import { AppContext } from '../../contexts/appContext';
 class SignInPage extends Component {
     static contextType = AppContext;
 
-    constructor (props){
-      super(props);
-    }
-
     componentDidMount() {
       this.context.actions.checkAuth();
     }

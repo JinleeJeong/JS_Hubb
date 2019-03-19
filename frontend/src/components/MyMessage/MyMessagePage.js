@@ -1,8 +1,6 @@
-import React, {Component, /*Fragment*/} from 'react';
+import React, {Component} from 'react';
 import './MyMessagePage.css';
-// import socketIOClient from "socket.io-client";
 import Inbox from './Inbox';
-// import axios from 'axios';
 import { AppContext } from '../../contexts/appContext';
 import apiClient from '../../helpers/apiClient';
 
@@ -31,7 +29,7 @@ class MyMessagePage extends Component {
     getMessagesApi(data, type = null){
       apiClient.post('/messages',data)
         .then(res => {
-          const total = type == "newMessage" ? res.total + 1 : res.total;
+          const total = type === "newMessage" ? res.total + 1 : res.total;
           this.setState({
             ...this.state,
             messages: res.list,
@@ -46,7 +44,7 @@ class MyMessagePage extends Component {
     }
     // change stream 이벤트 핸들러(메세지가 왔을 때)
     getArrivalMessage(data){
-      if(!this.context.state.signInInfo.status || this.context.state.signInInfo.id != data.recipient)
+      if(!this.context.state.signInInfo.status || this.context.state.signInInfo.id !== data.recipient)
         return true
 
       this.getMessagesApi(this.state.messagePagerInfo, 'newMessage');
@@ -89,7 +87,7 @@ class MyMessagePage extends Component {
     messagePagerHandler (id) {
       let {page} = this.state.messagePagerInfo;
 
-      if (id == "right")
+      if (id === "right")
           page = page + 1;
       else
           page = page - 1;
@@ -103,10 +101,10 @@ class MyMessagePage extends Component {
           <div className = "page">
             <div className = "aboveList">
               <div class = "btn-group" style = {{width: '100px'}}>
-              <button disabled = {page == 1} onClick = {()=>this.messagePagerHandler("left")} type ="button" class ="btn btn-default">
+              <button disabled = {page === 1} onClick = {()=>this.messagePagerHandler("left")} type ="button" class ="btn btn-default">
                 <span class="glyphicon glyphicon-chevron-left"></span>
               </button>
-              <button disabled = {total == 0 || page == Math.ceil(total/showNum)} onClick = {()=>this.messagePagerHandler("right")} type ="button" class ="btn btn-default">
+              <button disabled = {total === 0 || page === Math.ceil(total/showNum)} onClick = {()=>this.messagePagerHandler("right")} type ="button" class ="btn btn-default">
                 <span class="glyphicon glyphicon-chevron-right"></span>
               </button>
               </div>

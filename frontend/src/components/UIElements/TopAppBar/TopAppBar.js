@@ -16,6 +16,9 @@ const styles = {
   grow: {
     flexGrow: 1,
   },
+  button: {
+    fontSize: 17,
+  },
 };
 
 class TopAppBar extends Component {
@@ -25,18 +28,18 @@ class TopAppBar extends Component {
     const { classes } = this.props;
     
     return (
-      <div className={classes.root} style={{marginBottom: "0", marginTop: "0"}}>
+      <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
             <div className={classes.grow}>
-              <Link to="/" >
-                <img src={logo} style={{backgroundColor:"#90CAF9"}} alt="logo" height="40" width="150" />
+              <Link to="/templates" >
+                <img src={logo} color="inherit" alt="logo" height="40" width="150" />
               </Link>
             </div>
-            <Button component={Link} to="/contents" style={{color : "white", fontSize : "1.4vh"}}>현재 스터디 목록</Button>
-            <Button component={Link} to="/signup" style={{color : "white", fontSize : "1.4vh"}}>회원가입</Button>
+            <Button className={classes.button} component={Link} to="/templates" color="inherit">현재 스터디 목록</Button>
+            <Button className={classes.button} component={Link} to="/signup" color="inherit">회원가입</Button>
             {this.context.state.signInInfo.status === null ? <Button style={{width:'100px'}}> </Button> : this.context.state.signInInfo.status === false ?
-                (<Button component={Link} to="/signin" style={{color : "white", fontSize : "1.4vh"}}> 로그인 </Button>)
+                (<Button className={classes.button} component={Link} to="/signin" color="inherit"> 로그인 </Button>)
                 : (<Button> <Avatar/> </Button>)}
           </Toolbar>
         </AppBar>

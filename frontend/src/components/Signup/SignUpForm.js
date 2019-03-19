@@ -49,11 +49,11 @@ registrationApiCall (){
     name: this.state.formFieldInput.userName,
   })
   .then(res => {
-    if (res.message == "회원가입에 성공했습니다."){
+    if (res.message === "회원가입에 성공했습니다."){
       console.log("성공");
       this.props.history.push('/signin');
     }
-    else if(res.message == "중복된 아이디입니다.")
+    else if(res.message === "중복된 아이디입니다.")
       this.setValidationResult({
         fieldName: 'email',
         isCorrect: 'error',

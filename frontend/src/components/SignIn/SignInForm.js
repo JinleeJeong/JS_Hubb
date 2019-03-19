@@ -75,7 +75,7 @@ setValidationResult (validationResult){
       })
       .then(res => {
         console.log(res.message)
-        this.props.history.push(res.url)
+        this.props.history.push('/templates')
       })
       .catch(err=> console.log(err));
     }

@@ -1,0 +1,21 @@
+.login {
+    position : relative
+}
+.login::after{
+    background-image: url('../../images/background.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    content : "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity : 0.7;
+    z-index: -1;
+}
+.collection-create-form_last-form-item {
+    margin-bottom: 0;
+  }
